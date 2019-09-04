@@ -1,7 +1,7 @@
 from RPhysics import Position2D,Rectangle,Color
 from pygame import Surface,font
 from pygame.draw import rect 
-from pygame import Rect,K_BACKQUOTE,K_BACKSPACE,KEYDOWN,KEYUP,K_t,K_r,K_F3,K_c,K_SPACE,K_UP,K_DOWN
+from pygame import Rect,K_BACKQUOTE,K_BACKSPACE,KEYDOWN,KEYUP,K_t,K_r,K_F3,K_c,K_SPACE,K_q
 import threading
 import time
 K_ENTER = 13
@@ -11,6 +11,8 @@ class Float:
     RIGHT=1
     BOTTOM=2
     LEFT=3
+K_UP=273
+K_DOWN=273
 class Margin:
     def __init__(self,top=0,right=0,bottom=0,left=0,float_=0):
         self.top=top
@@ -31,12 +33,35 @@ class Clock:
     d = 0.0
     d_ = 0.0
     FPS = 0.0
+    FPS_LIMIT = 0 # 0 Unlimited
     def __init__(self):
         pass
     def Tick(self):
         self.d = time.time()-self.d_
-        self.FPS= 1.0/self.d 
+        if(self.d != 0):
+            self.FPS= 1.0/self.d 
+        else:
+            self.FPS=-1
         self.d_ = time.time()
+    def Limit_t(self):
+        if(self.FPS_LIMIT):
+            self.d = time.time()-self.d_
+            if(self.d != 0):
+                self.FPS= 1.0/self.d
+            else:
+                self.FPS=-1
+            tt = 1.0/self.FPS_LIMIT
+            d = tt-self.d
+            if(d > 0.0):
+                time.sleep(d)
+            self.d_ = time.time()
+    def Limit(self):
+        if(self.FPS_LIMIT):
+            t = time.time()-self.d_
+            tt = 1.0/self.FPS_LIMIT
+            d = tt-t
+            if(d > 0):
+                time.sleep(d)
 class Keyboard:
     def __init__(self,rp):
         self.rp = rp 
@@ -54,10 +79,12 @@ class Keyboard:
                 self.rp.Console.DebugPointer = not self.rp.Console.DebugPointer
             elif(event.key is K_r):
                 self.rp.Console.Reset([])
-            elif(event.key is K_UP):
-                self.rp.Universe.Zoom+=1
-            elif(event.key is K_DOWN):
-                self.rp.Universe.Zoom-=1
+            elif(event.key == K_UP):
+                self.rp.Universe.Zoom+=0.1
+            elif(event.key == K_DOWN):
+                self.rp.Universe.Zoom-=0.1
+            elif(event.key == K_q):
+                self.rp.Exit([])
         if(self.rp.Console.Open):
             self.rp.Console.Type(event)
         else:
@@ -245,7 +272,7 @@ class Console:
             self.screen.blit(surface,pos.GetTuple())
         if(self.DebugPointer):
             for key,i in zip(self.DebugVariables,range(len(self.DebugVariables))):
-                text = "%s : %s"%(self.DebugVariables[key] if type(self.DebugVariables[key]) is str else (repr(self.DebugVariables[key]) if not type(self.DebugVariables[key]) is float else "%.2f"%(self.DebugVariables[key])),key)
+                text = "%s : %s"%(self.DebugVariables[key] if type(self.DebugVariables[key]) is str else (repr(self.DebugVariables[key]) if not type(self.DebugVariables[key]) is float else ("%.2f"%(self.DebugVariables[key]) if self.DebugVariables[key] < 10e+4 else "%.2E"%(self.DebugVariables[key]) )),key)
                 surface = self.Font.render(text,False,self.DebugColor.GetTuple())
                 self.screen.blit(
                     surface,

@@ -9,11 +9,11 @@ class RPhysic:
     def __init__(self):
         pg.init()
         pg.display.set_caption('RPhysics')
-        self.GameDone = False
+        self.Done = False
         self.wh = Rectangle(800,600)
         self.GameDisplay = pg.display.set_mode(self.wh.t())
         self.GameClock   = pg.time.Clock()
-        self.Universe = RUniverse(self.GameDisplay,self.wh.width,self.wh.height)
+        self.Universe = RUniverse(self.GameDisplay,self,self.wh.width,self.wh.height)
         self.Console= Console(self.GameDisplay,self.wh,self)
         self.Mouse = Mouse(self)
         self.Keyboard = Keyboard(self)
@@ -21,14 +21,18 @@ class RPhysic:
         self.Clock = Clock()
         self.scene_1()
     def scene_1(self):
-        fpsd = setInterval(lambda :self.Console.Debug("FPS",self.Clock.FPS),0.1)
-        obj = self.Universe.AddParticle(pos=self.wh.GetCenter_p(),volume=10)
-        obj2 = self.Universe.AddParticle(pos=self.wh.GetCenter_p().Divide(y=4),vector=Vector2D(),volume=5,density=10)
-        vel  =GetOrbitVelocity(obj.Pos.GetDistance(obj2.Pos),obj.GetMass())
-        self.Console.log("Vel : %s"%(vel))
+        setInterval(lambda :self.Console.Debug("FPS",self.Clock.FPS),0.1)
+        setInterval(lambda :self.Console.Debug("CPS Universe",self.Universe.Clock.FPS if self.Universe.Clock.FPS != -1 else "Unlimited"),0.1)
+        setInterval(lambda :self.Console.Debug("ZOOM",self.Universe.Zoom),0.1)
+        setInterval(lambda :self.Console.Debug("D_Density",self.Universe.DefaultDensity),0.1)
+        setInterval(lambda :self.Console.Debug("D_Volume",self.Universe.DefaultVolume),0.1)
+        self.Clock.FPS_LIMIT = 120
+        obj = self.Universe.AddParticle(pos=self.wh.GetCenter_p(),volume=140,color=Color(0,0,255).GetTuple())
+        obj2 = self.Universe.AddParticle(pos=self.wh.GetCenter_p().Divide(y=10/4),vector=Vector2D(),volume=5,density=10)
+        vel  = GetOrbitVelocity(obj2.Pos.GetDistance(obj.Pos),obj.GetMass())
         obj2.Vector.Add_(x=vel)
     def Exit(self,event=None):
-        self.GameDone = True
+        self.Done = True
     def ButtonDown(self,event):
         self.Mouse.eventExecutor(event)
     def Key(self,event):
@@ -46,19 +50,21 @@ class RPhysic:
         except KeyError:
             return
     def init(self):
-        d  =0.0
+        d  = 0.0
         d_ = 0.0
-        while not self.GameDone:
+        self.Universe.ThreadCalculate()
+        self.Clock.Tick()
+        while not self.Done:
             for event in pg.event.get():
                 self.EventExecutor(event)
                 if event.type == pg.QUIT:
-                    self.GameDone = True
+                    self.Done = True
             self.GameDisplay.fill((0,0,0))
-            if(not self.Pause):
-                self.Universe.Calculate()
+            #if(not self.Pause):
+            #    self.Universe.Calculate()
             self.Universe.Draw()
             self.Console.Draw()
             pg.display.update()
-            self.Clock.Tick()
+            self.Clock.Limit_t()
         pg.quit()
 

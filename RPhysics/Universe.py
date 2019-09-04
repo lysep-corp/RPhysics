@@ -1,8 +1,9 @@
 from RPhysics.Objects import *
-
+from RPhysics.Tools import Clock
+import threading
 class RUniverse(object):
     """description of class"""
-    def __init__(self,GameDisplay,Width=1360,Height=768):
+    def __init__(self,GameDisplay,rp,Width=1360,Height=768):
         self.UniverseObjects = []
         self.Width = Width
         self.Height = Height
@@ -11,6 +12,10 @@ class RUniverse(object):
         self.Zoom = 1
         self.DefaultDensity = 1e+10
         self.DefaultVolume = 5
+        self.rp = rp
+        self.Clock = Clock()
+        self.Clock.FPS_LIMIT = 120
+        self.TC = threading.Thread(target=self.ThreadCalculate_)
     def AddParticle(self,pos=Position2D(0,0),color=Color(255,255,255),vector = Vector2D(0,0),volume=0,density=0):
         if(not density): density = self.DefaultDensity
         if(not volume): volume = self.DefaultVolume
@@ -25,3 +30,11 @@ class RUniverse(object):
             for Object_2 in self.UniverseObjects:
                 if(Object != Object_2):
                     Object._(Object_2)
+    def ThreadCalculate_(self):
+        while not self.rp.Done:
+            if(not self.rp.Pause):
+                self.Calculate()
+            self.Clock.Limit()            
+            self.Clock.Tick()
+    def ThreadCalculate(self):
+        self.TC.start()
