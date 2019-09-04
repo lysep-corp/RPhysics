@@ -51,4 +51,5 @@ class Circle(Object):
         d_clear = d-(self.GetRadius()+obj.GetRadius())
         if(d_clear <= 0):
             print("Colliding.")
-    
+    def IsHover(self,pos:Position2D):
+        return self.GetRadius() >= pos.GetDistance(self.Pos)

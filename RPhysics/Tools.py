@@ -4,6 +4,7 @@ from pygame.draw import rect
 from pygame import Rect,K_BACKQUOTE,K_BACKSPACE,KEYDOWN,KEYUP,K_t,K_r,K_F3,K_c,K_SPACE,K_q
 import threading
 import time
+import math
 K_ENTER = 13
 import shlex
 class Float:
@@ -101,7 +102,8 @@ class Mouse:
         self.mousepos.Set(m[0],m[1])
     def GetMouseHoverObject(self):
         for obj in self.rp.Universe.UniverseObjects:
-            pass
+            if(obj.IsHover(self.mousepos)):
+                return obj
     def eventLeftMouse(self,pos:Position2D):
         pos_ = self.rp.Universe.CamPos.Add_(pos)
         self.rp.Universe.AddParticle(pos)
@@ -244,6 +246,31 @@ class Console:
                     self.screenRes.height-self.BottomMargin-self.TextSize
                 )
             )
+        hvrobj = self.rp.Mouse.GetMouseHoverObject()
+        if(hvrobj):
+            w = hvrobj.GetRadius()
+            text = [
+                "X:%.2f"%(hvrobj.Pos.x),
+                "Y:%.2f"%(hvrobj.Pos.y),
+                "Speed : %.2f"%(hvrobj.Vector.Value),
+                "Angle : %s Degrees"%(math.degrees(hvrobj.Vector.Angle))
+            ]
+            surfaces = [self.Font.render(i,False,self.TextColor.GetTuple())  for i in text]
+            maxwidth = max([i.get_width() for i in surfaces])
+            rect(
+                self.screen,
+                self.UserInputColor.GetTuple(),
+                Rect(
+                    hvrobj.Pos.x+w,hvrobj.Pos.y-w+5,
+                    maxwidth+10,len(surfaces)*(self.TextSize+self.LineMargin)
+                )
+            )
+            for surface,i in zip(surfaces,range(len(surfaces))):
+                self.screen.blit(surface,(
+                    hvrobj.Pos.x+w+5,
+                    hvrobj.Pos.y-w+5+(i*self.TextSize+self.LineMargin)
+                ))
+            
         if(self.Open):
             rect(
                 self.screen,
