@@ -38,13 +38,24 @@ class Object:
         self.Volume = volume
         self.Density = density
         self.InfoBox = False
+        self.Vectors = {}
     def _(self,obj):
         vc = NewtonianGravity(self,obj)
-        self.rp.Console.ShowVector(vc,self,obj)
+        self.Vectors[obj] = vc
         self.Collide(obj)
         self.__()
+    def GetMomentum(self):
+        return self.Volume*self.Density*self.Vector.Value
     def GetMass(self):
         return self.Volume*self.Density
+    def Force(self,F,angle):
+        acc = F/self.GetMass()
+        self.Vector.SplitVectorAdd(acc,angle)
+        return self
+    def Force_(self,F,angle):
+        acc = F/self.GetMass()
+        self.Vector.SplitVectorAdd(acc,angle)
+        return acc
     def Collide(self,obj):
         pass
     def GetRadius(self):
@@ -70,6 +81,7 @@ class Circle(Object):
         d = self.Pos.GetDistance(obj.Pos)
         d_clear = d-(self.GetRadius()+obj.GetRadius())
         if(d_clear <= 0):
+            Collide(self,obj)
             print("Colliding.")
     def IsHover(self,pos:Position2D):
         return self.GetRadius() >= pos.GetDistance(self.Pos)

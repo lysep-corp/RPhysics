@@ -84,9 +84,9 @@ class Keyboard:
             elif(event.key is K_r):
                 self.rp.Console.Reset([])
             elif(event.key == K_UP):
-                self.rp.Universe.Zoom+=0.1
+                self.rp.Universe.Clock.FPS_LIMIT+=5
             elif(event.key == K_DOWN):
-                self.rp.Universe.Zoom-=0.1
+                self.rp.Universe.Clock.FPS_LIMIT-=5
             elif(event.key == K_q):
                 self.rp.Exit([])
         if(self.rp.Console.Open):
@@ -174,18 +174,21 @@ class Console:
             dest.Pos.x+r*math.cos(Vector.Angle),
             dest.Pos.y+r*math.sin(Vector.Angle)
         )
+        vl = (10 if Vector.Value <= 1 else Vector.Value*10)
         epos = Position2D(
-            spos.x+10*Vector.Value*math.cos(Vector.Angle),
-            spos.y+10*Vector.Value*math.sin(Vector.Angle)
+            spos.x+vl*math.cos(Vector.Angle),
+            spos.y+vl*math.sin(Vector.Angle)
         )
-        if(not source):
-            text = self.Font_v.render("R : %.2f"%(Vector.Value),False,self.TextColor.GetTuple())
-            line(self.screen,self.UNDEFINED_VECTOR.GetTuple(),spos.GetTuple(),epos.GetTuple(),3)
-            self.screen.blit(text,epos.Add(Position2D(6,-6)).GetTuple())
-        else:
-            text = self.Font_v.render("%s : %.2f"%(source.Name,Vector.Value),False,self.TextColor.GetTuple())
-            line(self.screen,self.DEFINED_VECTOR.GetTuple(),spos.GetTuple(),epos.GetTuple(),3)
-            self.screen.blit(text,epos.Add(Position2D(6,-6)).GetTuple())
+        #line(self.rp.GameDisplay,(255,255,255),(1,1),(10,10),width=10)
+        #if(source):
+            #text = self.Font_v.render("%s : %.2f"%(source.Name,Vector.Value),False,self.TextColor.GetTuple())
+            #line(self.screen,self.DEFINED_VECTOR.GetTuple(),spos.GetTuple(),epos.GetTuple(),3)
+            #self.screen.blit(text,epos.Add(Position2D(10,-6)).GetTuple())
+        #else:
+        text = "%s : %.2f"%(source.Name if source else "R",Vector.Value)
+        text = self.Font_v.render(text,False,self.TextColor.GetTuple())
+        line(self.rp.GameDisplay,(self.DEFINED_VECTOR if source else self.UNDEFINED_VECTOR).GetTuple(),spos.GetTuple(),epos.GetTuple(),3)
+        self.rp.GameDisplay.blit(text,epos.Add(Position2D(6,-6)).GetTuple())
     def Debug(self,key,value):
         self.DebugVariables[key] = value
     def setCommand(self,args):
@@ -308,6 +311,8 @@ class Console:
             if(obj.InfoBox):
                 self.DrawInfoBox(obj)
             self.ShowVector(obj.Vector,obj)
+            for obj_ in obj.Vectors:
+                self.ShowVector(obj.Vectors[obj_],obj_,obj)
         if(self.Open):
             rect(
                 self.screen,

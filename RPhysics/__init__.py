@@ -20,18 +20,36 @@ class RPhysic:
         self.Keyboard = Keyboard(self)
         self.Pause = True
         self.Clock = Clock()
-        self.scene_1()
-    def scene_1(self):
         setInterval(lambda :self.Console.Debug("FPS",self.Clock.FPS),0.1)
         setInterval(lambda :self.Console.Debug("CPS Universe",self.Universe.Clock.FPS if self.Universe.Clock.FPS != -1 else "Unlimited"),0.1)
+        setInterval(lambda :self.Console.Debug("CPS Limit",self.Universe.Clock.FPS_LIMIT if self.Universe.Clock.FPS_LIMIT != -1 else "Unlimited"),0.1)
         setInterval(lambda :self.Console.Debug("ZOOM",self.Universe.Zoom),0.1)
         setInterval(lambda :self.Console.Debug("D_Density",self.Universe.DefaultDensity),0.1)
         setInterval(lambda :self.Console.Debug("D_Volume",self.Universe.DefaultVolume),0.1)
         self.Clock.FPS_LIMIT = 120
-        obj = self.Universe.AddParticle(pos=self.wh.GetCenter_p(),volume=140,color=Color(0,0,255).GetTuple(),density=1e+15,name="Alpha")
+        self.scene_2()
+    def scene_1(self):
+        obj = self.Universe.AddParticle(pos=self.wh.GetCenter_p(),volume=140,color=Color(0,0,255).GetTuple(),density=1e+11,name="Alpha")
         obj2 = self.Universe.AddParticle(pos=self.wh.GetCenter_p().Divide(y=10/3),vector=Vector2D(),volume=5,density=10,name="Beta")
         vel  = GetOrbitVelocity(obj2.Pos.GetDistance(obj.Pos),obj.GetMass())
         obj2.Vector.Add_(x=vel)
+    def scene_2(self):
+        self.Clock.FPS_LIMIT = 120
+        obj = self.Universe.AddParticle(
+            pos=self.wh.GetCenter_p().Multiple(y=3/2,x=1/2),
+            vector=Vector2D(math.radians(-45),1),
+            volume=50,
+            color=Color(0,0,255).GetTuple(),
+            density=20,
+            name="Alpha"
+            )
+        obj2 = self.Universe.AddParticle(
+            pos=self.wh.GetCenter_p().Multiple(y=3/2,x=3/2),
+            vector=Vector2D(math.radians(225),1),
+            volume=50,
+            density=10,
+            name="Beta"
+            )
     def Exit(self,event=None):
         DONE_INTERVALS = True
         self.Done = True
