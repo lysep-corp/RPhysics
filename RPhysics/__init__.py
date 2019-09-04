@@ -27,7 +27,7 @@ class RPhysic:
         setInterval(lambda :self.Console.Debug("D_Density",self.Universe.DefaultDensity),0.1)
         setInterval(lambda :self.Console.Debug("D_Volume",self.Universe.DefaultVolume),0.1)
         self.Clock.FPS_LIMIT = 120
-        obj = self.Universe.AddParticle(pos=self.wh.GetCenter_p(),volume=140,color=Color(0,0,255).GetTuple())
+        obj = self.Universe.AddParticle(pos=self.wh.GetCenter_p(),volume=140,color=Color(0,0,255).GetTuple(),density=1e+10)
         obj2 = self.Universe.AddParticle(pos=self.wh.GetCenter_p().Divide(y=10/4),vector=Vector2D(),volume=5,density=10)
         vel  = GetOrbitVelocity(obj2.Pos.GetDistance(obj.Pos),obj.GetMass())
         obj2.Vector.Add_(x=vel)
@@ -65,6 +65,8 @@ class RPhysic:
             self.Universe.Draw()
             self.Console.Draw()
             pg.display.update()
-            self.Clock.Limit_t()
+            self.Mouse.Tick()
+            self.Clock.Limit()
+            self.Clock.Tick()
         pg.quit()
 

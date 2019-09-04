@@ -10,7 +10,7 @@ class RUniverse(object):
         self.GameDisplay = GameDisplay
         self.CamPos = Position2D(0,0)
         self.Zoom = 1
-        self.DefaultDensity = 1e+10
+        self.DefaultDensity = 10
         self.DefaultVolume = 5
         self.rp = rp
         self.Clock = Clock()

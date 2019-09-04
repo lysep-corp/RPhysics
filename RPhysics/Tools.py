@@ -1,5 +1,5 @@
 from RPhysics import Position2D,Rectangle,Color
-from pygame import Surface,font
+from pygame import Surface,font,mouse
 from pygame.draw import rect 
 from pygame import Rect,K_BACKQUOTE,K_BACKSPACE,KEYDOWN,KEYUP,K_t,K_r,K_F3,K_c,K_SPACE,K_q
 import threading
@@ -55,6 +55,8 @@ class Clock:
             if(d > 0.0):
                 time.sleep(d)
             self.d_ = time.time()
+        else:
+            self.Tick()
     def Limit(self):
         if(self.FPS_LIMIT):
             t = time.time()-self.d_
@@ -93,6 +95,13 @@ class Mouse:
     def __init__(self,rp):
         self.rp = rp 
         self.i = 0
+        self.mousepos = Position2D()
+    def Tick(self):
+        m = mouse.get_pos()
+        self.mousepos.Set(m[0],m[1])
+    def GetMouseHoverObject(self):
+        for obj in self.rp.Universe.UniverseObjects:
+            pass
     def eventLeftMouse(self,pos:Position2D):
         pos_ = self.rp.Universe.CamPos.Add_(pos)
         self.rp.Universe.AddParticle(pos)

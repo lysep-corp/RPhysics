@@ -35,6 +35,8 @@ class Object:
     def __(self):
         self.Pos.x+=self.Vector.x
         self.Pos.y+=self.Vector.y
+    def IsHover(self,pos:Position2D):
+        return int(pos.GetDistance(self.Pos)) == 0
 class Circle(Object):
     def Draw(self,screen:Surface):
         circle(screen,self.Color.GetTuple(),self.Pos.GetTuple(),self.GetRadiusi())
@@ -49,3 +51,4 @@ class Circle(Object):
         d_clear = d-(self.GetRadius()+obj.GetRadius())
         if(d_clear <= 0):
             print("Colliding.")
+    

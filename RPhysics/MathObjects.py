@@ -10,6 +10,10 @@ class Position2D:
         if(tuple_):
             self.x=tuple_[0]
             self.y=tuple_[1]
+    def Set(self,x=None,y=None):
+        if(x is not None ):self.x=x
+        if(y is not None ):self.y=y
+        return self
     def Subtract(self,Position):
         self.x-=Position.x
         self.y-=Position.y
