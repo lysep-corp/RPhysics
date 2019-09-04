@@ -20,6 +20,7 @@ class Object:
         self.Vector = vector
         self.Volume = volume
         self.Density = density
+        self.InfoBox = False
     def _(self,obj):
         NewtonianGravity(self,obj)
         self.Collide(obj)

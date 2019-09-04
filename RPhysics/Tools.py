@@ -7,6 +7,7 @@ import time
 import math
 K_ENTER = 13
 import shlex
+DONE_INTERVALS = False
 class Float:
     TOP=0
     RIGHT=1
@@ -22,7 +23,8 @@ class Margin:
         self.left=left
         self.float=float_
 def IntervalFunction(function,delay):
-    while 1:
+    global DONE_INTERVALS
+    while not DONE_INTERVALS:
         function()
         time.sleep(delay)
 def setInterval(function,delay):
@@ -100,13 +102,17 @@ class Mouse:
     def Tick(self):
         m = mouse.get_pos()
         self.mousepos.Set(m[0],m[1])
-    def GetMouseHoverObject(self):
+    def GetMouseHoverObject(self,mousepos=None):
         for obj in self.rp.Universe.UniverseObjects:
-            if(obj.IsHover(self.mousepos)):
+            if(obj.IsHover(mousepos if mousepos else self.mousepos)):
                 return obj
     def eventLeftMouse(self,pos:Position2D):
         pos_ = self.rp.Universe.CamPos.Add_(pos)
-        self.rp.Universe.AddParticle(pos)
+        obj = self.GetMouseHoverObject()
+        if(obj):
+            obj.InfoBox = not obj.InfoBox
+        else:
+            self.rp.Universe.AddParticle(pos)
     def eventRightMouse(self,pos:Position2D):
         print("right mouse")
     def eventMiddleMouse(self,pos:Position2D):
@@ -234,6 +240,33 @@ class Console:
                 text = text if type(text) is str else repr(text)
                 self.history.append(ConsoleText(content=text,id=self.IdCounter))
                 self.IdCounter+=1
+    def DrawInfoBox(self,hvrobj=None):
+        if(not hvrobj):
+            return None
+        w = hvrobj.GetRadius()
+        text = [
+            "X:%.2f"%(hvrobj.Pos.x),
+            "Y:%.2f"%(hvrobj.Pos.y),
+            "V_X:%.2f"%(hvrobj.Vector.x),
+            "V_Y:%.2f"%(hvrobj.Vector.y),
+            "Speed : %.2f"%(hvrobj.Vector.Value),
+            "Angle : %.2f Degrees"%(math.degrees(hvrobj.Vector.Angle))
+        ]
+        surfaces = [self.Font.render(i,False,self.TextColor.GetTuple())  for i in text]
+        maxwidth = max([i.get_width() for i in surfaces])
+        rect(
+            self.screen,
+            self.UserInputColor.GetTuple(),
+            Rect(
+                hvrobj.Pos.x+w,hvrobj.Pos.y-w+5,
+                maxwidth+10,len(surfaces)*(self.TextSize+self.LineMargin)
+            )
+        )
+        for surface,i in zip(surfaces,range(len(surfaces))):
+            self.screen.blit(surface,(
+                hvrobj.Pos.x+w+5,
+                hvrobj.Pos.y-w+5+(i*self.TextSize+self.LineMargin)
+            ))
     def Draw(self):
         lst = self.GetTexts()
         textoshow = self.TextToShow if not self.Open else self.TextToShowOpen
@@ -246,31 +279,10 @@ class Console:
                     self.screenRes.height-self.BottomMargin-self.TextSize
                 )
             )
-        hvrobj = self.rp.Mouse.GetMouseHoverObject()
-        if(hvrobj):
-            w = hvrobj.GetRadius()
-            text = [
-                "X:%.2f"%(hvrobj.Pos.x),
-                "Y:%.2f"%(hvrobj.Pos.y),
-                "Speed : %.2f"%(hvrobj.Vector.Value),
-                "Angle : %s Degrees"%(math.degrees(hvrobj.Vector.Angle))
-            ]
-            surfaces = [self.Font.render(i,False,self.TextColor.GetTuple())  for i in text]
-            maxwidth = max([i.get_width() for i in surfaces])
-            rect(
-                self.screen,
-                self.UserInputColor.GetTuple(),
-                Rect(
-                    hvrobj.Pos.x+w,hvrobj.Pos.y-w+5,
-                    maxwidth+10,len(surfaces)*(self.TextSize+self.LineMargin)
-                )
-            )
-            for surface,i in zip(surfaces,range(len(surfaces))):
-                self.screen.blit(surface,(
-                    hvrobj.Pos.x+w+5,
-                    hvrobj.Pos.y-w+5+(i*self.TextSize+self.LineMargin)
-                ))
-            
+        self.DrawInfoBox(self.rp.Mouse.GetMouseHoverObject())
+        for obj in self.rp.Universe.UniverseObjects:
+            if(obj.InfoBox):
+                self.DrawInfoBox(obj)
         if(self.Open):
             rect(
                 self.screen,

@@ -63,6 +63,9 @@ class Vector2D:
         self.Value = value
         self.x = value*math.cos(self.Angle)
         self.y = value*math.sin(self.Angle)
+    def GetAngle(self):
+        self.Angle = math.atan2(self.y,self.x)
+        return self.Angle
     def GetTuple(self):
         return (int(self.x),int(self.y))
     def SetValue(self,value):
@@ -79,12 +82,15 @@ class Vector2D:
     def SplitVectorSet(self,value,angle):
         self.x= value*math.cos(angle)
         self.y= value*math.sin(angle)
+        self.CalculateVA()
     def SplitVectorAdd(self,value,angle):
         self.x+= value*math.cos(angle)
         self.y+= value*math.sin(angle)
+        self.CalculateVA()
     def SplitVectorSub(self,value,angle):
         self.x-= value*math.cos(angle)
         self.y-= value*math.sin(angle)
+        self.CalculateVA()
     def Add_(self,x=0,y=0):
         self.x+=x
         self.y+=y

@@ -4,6 +4,7 @@ from RPhysics.Objects import *
 from RPhysics.Tools import *
 from RPhysics.Universe import *
 import time
+import sys
 
 class RPhysic:
     def __init__(self):
@@ -32,6 +33,7 @@ class RPhysic:
         vel  = GetOrbitVelocity(obj2.Pos.GetDistance(obj.Pos),obj.GetMass())
         obj2.Vector.Add_(x=vel)
     def Exit(self,event=None):
+        DONE_INTERVALS = True
         self.Done = True
     def ButtonDown(self,event):
         self.Mouse.eventExecutor(event)
