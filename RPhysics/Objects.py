@@ -1,7 +1,20 @@
 from RPhysics.MathObjects import *
 from RPhysics.Physics import *
 from pygame import Surface
-from pygame.draw import circle
+from pygame.draw import circle,line
+from random import choice
+GN = []
+NL = open("RPhysics/namelist.txt","rb").readlines()
+def RandomName():
+    global GN,NL
+    _ = choice(NL)
+    if(not _ in GN):
+        GN.append(_)
+        return _
+    elif(len(GN) == len(NL)):
+        GN=[]
+    else:
+        return RandomName()
 class Rectangle:
     def __init__(self,width=0,height=0,pos=Position2D()):
         self.width=width
@@ -14,7 +27,11 @@ class Rectangle:
     def t(self):
         return (self.width,self.height)
 class Object:
-    def __init__(self,pos=Position2D(0,0),color=Color(255,255,255),vector = Vector2D(0,0),volume=1,density=1):
+    UNDEFINED_VECTOR=Color(255,255,255)
+    DEFINED_VECTOR=Color(255,0,0)
+    def __init__(self,rp,pos=Position2D(0,0),color=Color(255,255,255),vector = Vector2D(0,0),volume=1,density=1,name=None):
+        self.rp = rp
+        self.Name = name if name else RandomName()
         self.Pos = pos
         self.Color = Color(255,255,255)
         self.Vector = vector
@@ -22,7 +39,8 @@ class Object:
         self.Density = density
         self.InfoBox = False
     def _(self,obj):
-        NewtonianGravity(self,obj)
+        vc = NewtonianGravity(self,obj)
+        self.rp.Console.ShowVector(vc,self,obj)
         self.Collide(obj)
         self.__()
     def GetMass(self):
@@ -38,6 +56,7 @@ class Object:
         self.Pos.y+=self.Vector.y
     def IsHover(self,pos:Position2D):
         return int(pos.GetDistance(self.Pos)) == 0
+
 class Circle(Object):
     def Draw(self,screen:Surface):
         circle(screen,self.Color.GetTuple(),self.Pos.GetTuple(),self.GetRadiusi())

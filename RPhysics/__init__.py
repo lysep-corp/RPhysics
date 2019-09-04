@@ -28,8 +28,8 @@ class RPhysic:
         setInterval(lambda :self.Console.Debug("D_Density",self.Universe.DefaultDensity),0.1)
         setInterval(lambda :self.Console.Debug("D_Volume",self.Universe.DefaultVolume),0.1)
         self.Clock.FPS_LIMIT = 120
-        obj = self.Universe.AddParticle(pos=self.wh.GetCenter_p(),volume=140,color=Color(0,0,255).GetTuple(),density=1e+10)
-        obj2 = self.Universe.AddParticle(pos=self.wh.GetCenter_p().Divide(y=10/4),vector=Vector2D(),volume=5,density=10)
+        obj = self.Universe.AddParticle(pos=self.wh.GetCenter_p(),volume=140,color=Color(0,0,255).GetTuple(),density=1e+15,name="Alpha")
+        obj2 = self.Universe.AddParticle(pos=self.wh.GetCenter_p().Divide(y=10/3),vector=Vector2D(),volume=5,density=10,name="Beta")
         vel  = GetOrbitVelocity(obj2.Pos.GetDistance(obj.Pos),obj.GetMass())
         obj2.Vector.Add_(x=vel)
     def Exit(self,event=None):

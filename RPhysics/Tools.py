@@ -1,7 +1,7 @@
-from RPhysics import Position2D,Rectangle,Color
+from RPhysics import Position2D,Rectangle,Color,Vector2D
 from pygame import Surface,font,mouse
-from pygame.draw import rect 
-from pygame import Rect,K_BACKQUOTE,K_BACKSPACE,KEYDOWN,KEYUP,K_t,K_r,K_F3,K_c,K_SPACE,K_q
+from pygame.draw import rect,line
+from pygame import Rect,K_BACKQUOTE,K_BACKSPACE,KEYDOWN,KEYUP,K_t,K_r,K_F3,K_c,K_SPACE,K_q,K_UP,K_DOWN
 import threading
 import time
 import math
@@ -13,8 +13,7 @@ class Float:
     RIGHT=1
     BOTTOM=2
     LEFT=3
-K_UP=273
-K_DOWN=273
+
 class Margin:
     def __init__(self,top=0,right=0,bottom=0,left=0,float_=0):
         self.top=top
@@ -132,6 +131,8 @@ class ConsoleText:
         self.class_=class_
 
 class Console:
+    UNDEFINED_VECTOR=Color(255,255,255)
+    DEFINED_VECTOR=Color(255,0,0)
     def __init__(self,screen:Surface,screenResolution:Rectangle,rp):
         font.init()
         self.rp = rp
@@ -154,6 +155,7 @@ class Console:
         self.TextToShow = 5
         self.TextToShowOpen = 20
         self.TextSize=13
+        self.VectorTextSize=12
         self.LineMargin = 3
         self.TopMargin = 5
         self.LeftMargin = 5
@@ -162,9 +164,28 @@ class Console:
         self.DebugLineMargin = Margin(bottom=3)
         self.KeyDelay = 15
         self.Font = font.SysFont("Consolas",self.TextSize)
+        self.Font_v = font.SysFont("Consolas",self.VectorTextSize)
     def _(self):
         lst = self.GetTexts()
         print(repr(lst))
+    def ShowVector(self,Vector:Vector2D,dest=None,source=None):
+        r = dest.GetRadius()
+        spos = Position2D(
+            dest.Pos.x+r*math.cos(Vector.Angle),
+            dest.Pos.y+r*math.sin(Vector.Angle)
+        )
+        epos = Position2D(
+            spos.x+10*Vector.Value*math.cos(Vector.Angle),
+            spos.y+10*Vector.Value*math.sin(Vector.Angle)
+        )
+        if(not source):
+            text = self.Font_v.render("R : %.2f"%(Vector.Value),False,self.TextColor.GetTuple())
+            line(self.screen,self.UNDEFINED_VECTOR.GetTuple(),spos.GetTuple(),epos.GetTuple(),3)
+            self.screen.blit(text,epos.Add(Position2D(6,-6)).GetTuple())
+        else:
+            text = self.Font_v.render("%s : %.2f"%(source.Name,Vector.Value),False,self.TextColor.GetTuple())
+            line(self.screen,self.DEFINED_VECTOR.GetTuple(),spos.GetTuple(),epos.GetTuple(),3)
+            self.screen.blit(text,epos.Add(Position2D(6,-6)).GetTuple())
     def Debug(self,key,value):
         self.DebugVariables[key] = value
     def setCommand(self,args):
@@ -245,12 +266,15 @@ class Console:
             return None
         w = hvrobj.GetRadius()
         text = [
+            "%s"%(hvrobj.Name),
             "X:%.2f"%(hvrobj.Pos.x),
             "Y:%.2f"%(hvrobj.Pos.y),
             "V_X:%.2f"%(hvrobj.Vector.x),
             "V_Y:%.2f"%(hvrobj.Vector.y),
             "Speed : %.2f"%(hvrobj.Vector.Value),
-            "Angle : %.2f Degrees"%(math.degrees(hvrobj.Vector.Angle))
+            "Angle : %.2f Degrees"%(math.degrees(hvrobj.Vector.Angle)),
+            "Density : %.2E"%(hvrobj.Density),
+            "Volume : %.2E"%(hvrobj.Volume)
         ]
         surfaces = [self.Font.render(i,False,self.TextColor.GetTuple())  for i in text]
         maxwidth = max([i.get_width() for i in surfaces])
@@ -283,6 +307,7 @@ class Console:
         for obj in self.rp.Universe.UniverseObjects:
             if(obj.InfoBox):
                 self.DrawInfoBox(obj)
+            self.ShowVector(obj.Vector,obj)
         if(self.Open):
             rect(
                 self.screen,

@@ -16,10 +16,10 @@ class RUniverse(object):
         self.Clock = Clock()
         self.Clock.FPS_LIMIT = 120
         self.TC = threading.Thread(target=self.ThreadCalculate_)
-    def AddParticle(self,pos=Position2D(0,0),color=Color(255,255,255),vector = Vector2D(0,0),volume=0,density=0):
+    def AddParticle(self,pos=Position2D(0,0),color=Color(255,255,255),vector = Vector2D(0,0),volume=0,density=0,name=None):
         if(not density): density = self.DefaultDensity
         if(not volume): volume = self.DefaultVolume
-        obj = Circle(pos=pos,color=color,vector=vector,volume=volume,density=density)
+        obj = Circle(self.rp,pos=pos,color=color,vector=vector,volume=volume,density=density,name=name)
         self.UniverseObjects.append(obj)
         return obj
     def Draw(self):
