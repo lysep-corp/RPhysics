@@ -14,26 +14,34 @@ class Rectangle:
     def t(self):
         return (self.width,self.height)
 class Object:
-    def __init__(self,pos=Position2D(0,0),color=Color(255,255,255),vector = Vector2D(0,0),volume=1,density=1,radius=5):
+    def __init__(self,pos=Position2D(0,0),color=Color(255,255,255),vector = Vector2D(0,0),volume=1,density=1):
         self.Pos = pos
         self.Color = Color(255,255,255)
         self.Vector = vector
         self.Volume = volume
         self.Density = density
-        self.Radius = radius
     def _(self,obj):
         NewtonianGravity(self,obj)
         self.Collide(obj)
         self.__()
+    def GetMass(self):
+        return self.Volume*self.Density
     def Collide(self,obj):
         pass
+    def GetRadius(self):
+        return self.Volume
+    def GetRadiusi(self):
+        return int(self.Volume)
     def __(self):
         self.Pos.x+=self.Vector.x
         self.Pos.y+=self.Vector.y
 class Circle(Object):
     def Draw(self,screen:Surface):
-        circle(screen,self.Color.GetTuple(),self.Pos.GetTuple(),self.Radius)
+        circle(screen,self.Color.GetTuple(),self.Pos.GetTuple(),self.GetRadiusi())
     def DrawRelative(self,screen:Surface,camera:Position2D,zoom:float):
-        circle(screen,self.Color.GetTuple(),self.Pos.Subtract_(camera).GetTuple(),self.Radius*zoom)
-    def Collide(self,obj):
-        pass
+        circle(screen,self.Color.GetTuple(),self.Pos.Subtract_(camera).GetTuple(),self.GetRadiusi()*int(zoom))
+    def Collide(self,obj:Object):
+        d = self.Pos.GetDistance(obj.Pos)
+        d_clear = d-(self.GetRadius()+obj.GetRadius())
+        if(d_clear <= 0):
+            print("Colliding.")

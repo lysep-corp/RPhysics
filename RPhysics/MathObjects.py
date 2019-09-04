@@ -30,11 +30,23 @@ class Position2D:
         x+= Position.x
         y+= Position.y
         return Position2D(x,y)
+    def Multiple(self,x=0,y=0):
+        if(x):
+            self.x*=x
+        if(y):
+            self.y*=y
+        return self
+    def Divide(self,x=0,y=0):
+        if(x):
+            self.x/=x
+        if(y):
+            self.y/=y
+        return self
     def GetTuple(self):
         return (int(self.x),int(self.y))
-    def GetDistanceSquareWithTarget(self,TargetPosition):
+    def GetDistanceSquare(self,TargetPosition):
         return ((TargetPosition.x-self.x)**2 + (TargetPosition.y-self.y)**2)
-    def GetDistanceWithTarget(self,TargetPosition):
+    def GetDistance(self,TargetPosition):
         return ((TargetPosition.x-self.x)**2 + (TargetPosition.y-self.y)**2)**0.5
     def GetTargetAngle(self,TargetPosition):
         return math.atan2(
@@ -73,34 +85,42 @@ class Vector2D:
         self.x+=x
         self.y+=y
         self.CalculateVA()
+        return self
     def Add(self,vector):
         self.x+=vector.x
         self.y+=vector.y
         self.CalculateVA()
+        return self
     def Substract(self,vector):
         self.x-=vector.x
         self.y-=vector.y
         self.CalculateVA()
+        return self
     def Substract_(self,x=0,y=0):
         self.x-=x
         self.y-=y
         self.CalculateVA()
+        return self
     def Multiply_(self,x=0,y=0):
         self.x*=x
         self.y*=y
         self.CalculateVA()
+        return self
     def Multiply(self,vector):
         self.x*=vector.x
         self.y*=vector.y
         self.CalculateVA()
+        return self
     def Divide_(self,x=0,y=0):
         self.x/=x
         self.y/=y
         self.CalculateVA()
+        return self
     def Divide(self,vector):
         self.x/=vector.x
         self.y/=vector.y
         self.CalculateVA()
+        return self
 class Color:
     def __init__(self,r=0,g=0,b=0):
         self.Red = r

@@ -9,10 +9,12 @@ class RUniverse(object):
         self.GameDisplay = GameDisplay
         self.CamPos = Position2D(0,0)
         self.Zoom = 1
-        self.DefaultDensity = 5e+13
-    def AddParticle(self,pos=Position2D(0,0),color=Color(255,255,255),vector = Vector2D(0,0),volume=1,density=0,radius=5):
+        self.DefaultDensity = 1e+10
+        self.DefaultVolume = 5
+    def AddParticle(self,pos=Position2D(0,0),color=Color(255,255,255),vector = Vector2D(0,0),volume=0,density=0):
         if(not density): density = self.DefaultDensity
-        obj = Circle(pos=pos,color=color,vector=vector,volume=volume,density=density,radius=radius)
+        if(not volume): volume = self.DefaultVolume
+        obj = Circle(pos=pos,color=color,vector=vector,volume=volume,density=density)
         self.UniverseObjects.append(obj)
         return obj
     def Draw(self):
