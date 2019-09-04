@@ -1,7 +1,7 @@
 from RPhysics.MathObjects import *
 from RPhysics.Physics import *
 from pygame import Surface
-from pygame.draw import circle 
+from pygame.draw import circle
 class Rectangle:
     def __init__(self,width=0,height=0,pos=Position2D()):
         self.width=width
@@ -39,7 +39,11 @@ class Circle(Object):
     def Draw(self,screen:Surface):
         circle(screen,self.Color.GetTuple(),self.Pos.GetTuple(),self.GetRadiusi())
     def DrawRelative(self,screen:Surface,camera:Position2D,zoom:float):
-        circle(screen,self.Color.GetTuple(),self.Pos.Subtract_(camera).GetTuple(),self.GetRadiusi()*int(zoom))
+        A = self.Pos.Subtract_(camera).GetTuple()
+        B = (screen.get_width(),screen.get_height()) 
+        r = self.GetRadius()
+        if(B[0]+r >= A[0] and B[1]+r >= B[1] and B[0] >= 0 and B[1] >= 0):
+            circle(screen,self.Color.GetTuple(),A,self.GetRadiusi()*int(zoom))
     def Collide(self,obj:Object):
         d = self.Pos.GetDistance(obj.Pos)
         d_clear = d-(self.GetRadius()+obj.GetRadius())

@@ -4,7 +4,7 @@ def NewtonianGravity(o,o_):
     omass = o.GetMass()
     o_mass = o_.GetMass()
     F = const.G*omass*o_mass/o.Pos.GetDistanceSquare(o_.Pos)
-    acc = F/omass
+    acc = F/o_mass
     angle = o.Pos.GetTargetAngle(o_.Pos)
     o_.Vector.SplitVectorSub(acc,angle)
 def Collide(o,o_):

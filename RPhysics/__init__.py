@@ -22,9 +22,11 @@ class RPhysic:
         self.scene_1()
     def scene_1(self):
         fpsd = setInterval(lambda :self.Console.Debug("FPS",self.Clock.FPS),0.1)
-        obj = self.Universe.AddParticle(pos=self.wh.GetCenter_p(),volume=5)
-        obj2 = self.Universe.AddParticle(pos=self.wh.GetCenter_p().Divide(y=4),vector=Vector2D(),volume=5)
-        obj2.Vector.Add_(x=GetOrbitVelocity(obj.Pos.GetDistance(obj2.Pos),obj.GetMass()))
+        obj = self.Universe.AddParticle(pos=self.wh.GetCenter_p(),volume=10)
+        obj2 = self.Universe.AddParticle(pos=self.wh.GetCenter_p().Divide(y=4),vector=Vector2D(),volume=5,density=10)
+        vel  =GetOrbitVelocity(obj.Pos.GetDistance(obj2.Pos),obj.GetMass())
+        self.Console.log("Vel : %s"%(vel))
+        obj2.Vector.Add_(x=vel)
     def Exit(self,event=None):
         self.GameDone = True
     def ButtonDown(self,event):

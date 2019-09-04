@@ -1,7 +1,7 @@
 from RPhysics import Position2D,Rectangle,Color
 from pygame import Surface,font
 from pygame.draw import rect 
-from pygame import Rect,K_BACKQUOTE,K_BACKSPACE,KEYDOWN,KEYUP,K_t,K_r,K_F3,K_c,K_SPACE
+from pygame import Rect,K_BACKQUOTE,K_BACKSPACE,KEYDOWN,KEYUP,K_t,K_r,K_F3,K_c,K_SPACE,K_UP,K_DOWN
 import threading
 import time
 K_ENTER = 13
@@ -43,10 +43,10 @@ class Keyboard:
     def executeCommand(self,event):
         pass
     def eventExecutor(self,event):
-        if(event.type is KEYDOWN):
-            if(event.key is K_BACKQUOTE):
+        if(event.key is K_BACKQUOTE and event.type is KEYDOWN):
                 self.rp.Console.Open = not self.rp.Console.Open
-            elif(event.key is K_SPACE):
+        if(event.type is KEYDOWN and not self.rp.Console.Open):
+            if(event.key is K_SPACE):
                 self.rp.Pause = not self.rp.Pause
             elif(event.key is K_c):
                 self.rp.Console.Clear([])
@@ -54,6 +54,10 @@ class Keyboard:
                 self.rp.Console.DebugPointer = not self.rp.Console.DebugPointer
             elif(event.key is K_r):
                 self.rp.Console.Reset([])
+            elif(event.key is K_UP):
+                self.rp.Universe.Zoom+=1
+            elif(event.key is K_DOWN):
+                self.rp.Universe.Zoom-=1
         if(self.rp.Console.Open):
             self.rp.Console.Type(event)
         else:
@@ -137,6 +141,14 @@ class Console:
                     v = float(value) 
                     self.rp.Universe.DefaultVolume = v
                     self.log("Volume changed %s to %s"%(d,v))
+                except:
+                    pass
+            if(variableName == "zoom"):
+                try:
+                    d = self.rp.Universe.Zoom
+                    v = float(value) 
+                    self.rp.Universe.Zoom = v
+                    self.log("Zoom changed %s to %s"%(d,v))
                 except:
                     pass
     def Reset(self,args):
