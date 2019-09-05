@@ -29,7 +29,7 @@ class RPhysic:
         self.Clock.FPS_LIMIT = 120
         self.scene_2()
     def scene_1(self):
-        obj = self.Universe.AddParticle(pos=self.wh.GetCenter_p(),volume=140,color=Color(0,0,255).GetTuple(),density=1e+11,name="Alpha")
+        obj = self.Universe.AddParticle(pos=self.wh.GetCenter_p(),volume=140,color=Color(0,0,255).GetTuple(),density=1e+15,name="Alpha")
         obj2 = self.Universe.AddParticle(pos=self.wh.GetCenter_p().Divide(y=10/3),vector=Vector2D(),volume=5,density=10,name="Beta")
         vel  = GetOrbitVelocity(obj2.Pos.GetDistance(obj.Pos),obj.GetMass())
         obj2.Vector.Add_(x=vel)
@@ -82,6 +82,7 @@ class RPhysic:
             self.GameDisplay.fill((0,0,0))
             #if(not self.Pause):
             #    self.Universe.Calculate()
+            self.Universe.MoveCam()
             self.Universe.Draw()
             self.Console.Draw()
             pg.display.update()

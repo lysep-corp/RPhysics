@@ -89,6 +89,23 @@ class Keyboard:
                 self.rp.Universe.Clock.FPS_LIMIT-=5
             elif(event.key == K_q):
                 self.rp.Exit([])
+            elif(event.key == K_w):
+                self.rp.Universe.MovePos.y=1
+            elif(event.key == K_s):
+                self.rp.Universe.MovePos.y=-1
+            elif(event.key == K_a):
+                self.rp.Universe.MovePos.x=-1
+            elif(event.key == K_d):
+                self.rp.Universe.MovePos.x=1
+        elif(event.type is KEYUP and not self.rp.Console.Open):
+            if(event.key == K_w):
+                self.rp.Universe.MovePos.y=0
+            elif(event.key == K_s):
+                self.rp.Universe.MovePos.y=0
+            elif(event.key == K_a):
+                self.rp.Universe.MovePos.x=0
+            elif(event.key == K_d):
+                self.rp.Universe.MovePos.x=0
         if(self.rp.Console.Open):
             self.rp.Console.Type(event)
         else:
@@ -187,7 +204,7 @@ class Console:
         #else:
         text = "%s : %.2f"%(source.Name if source else "R",Vector.Value)
         text = self.Font_v.render(text,False,self.TextColor.GetTuple())
-        line(self.rp.GameDisplay,(self.DEFINED_VECTOR if source else self.UNDEFINED_VECTOR).GetTuple(),spos.GetTuple(),epos.GetTuple(),3)
+        line(self.rp.GameDisplay,(self.DEFINED_VECTOR if source else self.UNDEFINED_VECTOR).GetTuple(),spos.Add(self.rp.Universe.CamPos).GetTuple(),epos.Add(self.rp.Universe.CamPos).GetTuple(),3)
         self.rp.GameDisplay.blit(text,epos.Add(Position2D(6,-6)).GetTuple())
     def Debug(self,key,value):
         self.DebugVariables[key] = value

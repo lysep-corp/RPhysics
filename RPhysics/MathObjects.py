@@ -2,6 +2,7 @@ import math
 class const:
     pi=3.14159265358979323846
     G = 6.67e-11
+    c = 3e+8
 
 class Position2D:
     def __init__(self,x=0,y=0,tuple_=None):
@@ -25,8 +26,8 @@ class Position2D:
         y+= Position.y
         return Position2D(x,y)
     def Add(self,Position):
-        self.x-=Position.x
-        self.y-=Position.y
+        self.x+=Position.x
+        self.y+=Position.y
         return self
     def Add_(self,Position):
         x = self.x
@@ -111,7 +112,7 @@ class Vector2D:
         self.y-=y
         self.CalculateVA()
         return self
-    def Multiply_(self,x=0,y=0):
+    def Multiply_(self,x=1,y=1):
         self.x*=x
         self.y*=y
         self.CalculateVA()
@@ -121,7 +122,7 @@ class Vector2D:
         self.y*=vector.y
         self.CalculateVA()
         return self
-    def Divide_(self,x=0,y=0):
+    def Divide_(self,x=1,y=1):
         self.x/=x
         self.y/=y
         self.CalculateVA()
