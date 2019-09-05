@@ -40,14 +40,14 @@ class RPhysic:
             vector=Vector2D(math.radians(-45),1),
             volume=50,
             color=Color(0,0,255).GetTuple(),
-            density=20,
+            density=1,
             name="Alpha"
             )
         obj2 = self.Universe.AddParticle(
             pos=self.wh.GetCenter_p().Multiple(y=3/2,x=3/2),
             vector=Vector2D(math.radians(225),1),
-            volume=50,
-            density=10,
+            volume=10,
+            density=1,
             name="Beta"
             )
     def Exit(self,event=None):

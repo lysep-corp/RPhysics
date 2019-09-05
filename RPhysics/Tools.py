@@ -94,9 +94,9 @@ class Keyboard:
             elif(event.key == K_s):
                 self.rp.Universe.MovePos.y=-1
             elif(event.key == K_a):
-                self.rp.Universe.MovePos.x=-1
-            elif(event.key == K_d):
                 self.rp.Universe.MovePos.x=1
+            elif(event.key == K_d):
+                self.rp.Universe.MovePos.x=-1
         elif(event.type is KEYUP and not self.rp.Console.Open):
             if(event.key == K_w):
                 self.rp.Universe.MovePos.y=0

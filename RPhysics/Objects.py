@@ -56,6 +56,13 @@ class Object:
         acc = F/self.GetMass()
         self.Vector.SplitVectorAdd(acc,angle)
         return acc
+    def SwitchMomentum(self,o):
+        a = self.GetMomentum()
+        b = o.GetMomentum()
+        self.SetMomentum(b)
+        o.SetMomentum(a)
+    def SetMomentum(self,momentum):
+        self.Vector.SetValue(momentum/self.GetMass())
     def Collide(self,obj):
         pass
     def GetRadius(self):
