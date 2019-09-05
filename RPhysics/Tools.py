@@ -1,7 +1,7 @@
 from RPhysics import Position2D,Rectangle,Color,Vector2D
 from pygame import Surface,font,mouse
 from pygame.draw import rect,line
-from pygame import Rect,K_BACKQUOTE,K_BACKSPACE,KEYDOWN,KEYUP,K_t,K_r,K_F3,K_c,K_SPACE,K_q,K_UP,K_DOWN
+from pygame import Rect,K_BACKQUOTE,K_BACKSPACE,KEYDOWN,KEYUP,K_t,K_r,K_F3,K_c,K_SPACE,K_q,K_UP,K_DOWN,K_LEFT,K_RIGHT,K_w,K_a,K_s,K_d
 import threading
 import time
 import math
