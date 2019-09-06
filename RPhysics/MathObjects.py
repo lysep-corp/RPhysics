@@ -41,12 +41,24 @@ class Position2D:
         if(y):
             self.y*=y
         return self
+    def Multiple_(self,x=0,y=0):
+        if(x):
+            x = self.x*x
+        if(y):
+            y = self.y*y
+        return Position2D(x,y)
     def Divide(self,x=0,y=0):
         if(x):
             self.x/=x
         if(y):
             self.y/=y
         return self
+    def Divide(self,x=0,y=0):
+        if(x):
+            x = self.x/x
+        if(y):
+            y = self.y/y
+        return Position2D(x,y)
     def GetTuple(self):
         return (int(self.x),int(self.y))
     def GetDistanceSquare(self,TargetPosition):

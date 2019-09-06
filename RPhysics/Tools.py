@@ -84,9 +84,9 @@ class Keyboard:
             elif(event.key is K_r):
                 self.rp.Console.Reset([])
             elif(event.key == K_UP):
-                self.rp.Universe.Clock.FPS_LIMIT+=5
+                self.rp.Universe.UniverseCPSController=1
             elif(event.key == K_DOWN):
-                self.rp.Universe.Clock.FPS_LIMIT-=5
+                self.rp.Universe.UniverseCPSController=-1
             elif(event.key == K_q):
                 self.rp.Exit([])
             elif(event.key == K_w):
@@ -106,6 +106,10 @@ class Keyboard:
                 self.rp.Universe.MovePos.x=0
             elif(event.key == K_d):
                 self.rp.Universe.MovePos.x=0
+            elif(event.key == K_UP):
+                self.rp.Universe.UniverseCPSController=0
+            elif(event.key == K_DOWN):
+                self.rp.Universe.UniverseCPSController=0
         if(self.rp.Console.Open):
             self.rp.Console.Type(event)
         else:
@@ -327,9 +331,9 @@ class Console:
         for obj in self.rp.Universe.UniverseObjects:
             if(obj.InfoBox):
                 self.DrawInfoBox(obj)
-            #self.ShowVector(obj.Vector,obj)
-            #for obj_ in obj.Vectors:
-            #    self.ShowVector(obj.Vectors[obj_],obj_,obj)
+            self.ShowVector(obj.Vector,obj)
+            for obj_ in obj.Vectors:
+                self.ShowVector(obj.Vectors[obj_],obj_,obj)
         if(self.Open):
             rect(
                 self.screen,

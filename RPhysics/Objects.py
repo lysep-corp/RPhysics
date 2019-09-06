@@ -4,7 +4,7 @@ from pygame import Surface
 from pygame.draw import circle,line
 from random import choice
 GN = []
-NL = open("RPhysics/namelist.txt","rb").readlines()
+NL = open("RPhysics/namelist.txt","r").readlines()
 def RandomName():
     global GN,NL
     _ = choice(NL)
@@ -14,7 +14,7 @@ def RandomName():
     elif(len(GN) == len(NL)):
         GN=[]
     else:
-        return RandomName()
+        return RandomName().rstrip()
 class Rectangle:
     def __init__(self,width=0,height=0,pos=Position2D()):
         self.width=width
@@ -41,7 +41,7 @@ class Object:
         self.Vectors = {}
     def _(self,obj):
         vc = NewtonianGravity(self,obj)
-        self.Vectors[obj] = vc
+        self.Vectors[obj] = vc[0]
         self.Collide(obj)
         self.__()
     def GetMomentum(self):
@@ -83,12 +83,11 @@ class Circle(Object):
         B = (screen.get_width(),screen.get_height()) 
         r = self.GetRadius()
         if(B[0]+r >= A[0] and B[1]+r >= B[1] and B[0] >= 0 and B[1] >= 0):
-            circle(screen,self.Color.GetTuple(),A,self.GetRadiusi()*int(zoom))
+            circle(screen,self.Color.GetTuple(),A,int(self.GetRadiusi()*zoom))
     def Collide(self,obj:Object):
         d = self.Pos.GetDistance(obj.Pos)
         d_clear = d-(self.GetRadius()+obj.GetRadius())
         if(d_clear <= 0):
             Collide(self,obj)
-            print("Colliding.")
     def IsHover(self,pos:Position2D):
         return self.GetRadius() >= pos.GetDistance(self.Pos)

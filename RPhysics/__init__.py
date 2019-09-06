@@ -29,7 +29,7 @@ class RPhysic:
         self.Clock.FPS_LIMIT = 120
         self.scene_3()
     def scene_1(self):
-        obj = self.Universe.AddParticle(pos=self.wh.GetCenter_p(),volume=140,color=Color(0,0,255).GetTuple(),density=1e+15,name="Alpha")
+        obj = self.Universe.AddParticle(pos=self.wh.GetCenter_p(),volume=140,color=Color(0,0,255).GetTuple(),density=1e+12,name="Alpha")
         obj2 = self.Universe.AddParticle(pos=self.wh.GetCenter_p().Divide(y=10/3),vector=Vector2D(),volume=5,density=10,name="Beta")
         vel  = GetOrbitVelocity(obj2.Pos.GetDistance(obj.Pos),obj.GetMass())
         obj2.Vector.Add_(x=vel)
@@ -52,13 +52,21 @@ class RPhysic:
             )
     def scene_3(self):
         self.Clock.FPS_LIMIT = 120
-        for i in range(0,3):
-            obj = self.Universe.AddParticle(
-                pos=Position2D(random.randint(0,self.wh.width),random.randint(0,self.wh.height)),
-                volume=10,
-                density=1e+13,
-                name="Beta"
+
+        obj = self.Universe.AddParticle(
+            pos=self.wh.GetCenter_p().Multiple(x=1/2,y=2/3),
+            volume=50,
+            density=1e+12,
+            color=Color(0,0,255).GetTuple(),
+            name="Alpha"
             )
+        obj2 = self.Universe.AddParticle(
+            pos=self.wh.GetCenter_p().Multiple(x=3/2,y=3/2),
+            vector=Vector2D(math.degrees(-45),2),
+            volume=50,
+            density=1e+12,
+            name="Beta"
+            )    
         
     def Exit(self,event=None):
         DONE_INTERVALS = True
@@ -92,6 +100,7 @@ class RPhysic:
             self.GameDisplay.fill((0,0,0))
             #if(not self.Pause):
             #    self.Universe.Calculate()
+            self.Universe.ControlCPS()
             self.Universe.MoveCam()
             self.Universe.Draw()
             self.Console.Draw()
