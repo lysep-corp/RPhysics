@@ -2,13 +2,14 @@ from RPhysics.Objects import *
 from RPhysics.MathObjects import const
 def Relativity(speed):
     return (1-speed**2/const.c**2)**0.5
+def GetGravityForce(o,o_):
+    return const.G*o.GetMass()*o_.GetMass()/o.Pos.GetDistanceSquare(o_.Pos)
 def NewtonianGravity(o,o_):
-    omass = o.GetMass()
-    o_mass = o_.GetMass()
-    F = const.G*omass*o_mass/o.Pos.GetDistanceSquare(o_.Pos)
+    F = GetGravityForce(o,o_)
     angle = o_.Pos.GetTargetAngle(o.Pos)
-    acc = o_.Force_(F,angle)*Relativity(o_.Vector.Value)
-    return Vector2D(angle,acc)
+    acc = o_.Force_(F,angle)
+    acc_ = F/o.GetMass()#o.Force_(F,angle)
+    return Vector2D(angle,acc),Vector2D(angle,acc_)
 def Collide(o,o_):
     tangent = o_.Pos.GetTargetAngle(o.Pos)+0.5*const.pi
     #o.rp.Console.log("%s Tangent : %s°"%(o.Name,math.degrees(tangent)))
