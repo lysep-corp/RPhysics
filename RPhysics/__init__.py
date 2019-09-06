@@ -5,7 +5,7 @@ from RPhysics.Tools import *
 from RPhysics.Universe import *
 import time
 import sys
-
+import random
 class RPhysic:
     def __init__(self):
         pg.init()
@@ -27,7 +27,7 @@ class RPhysic:
         setInterval(lambda :self.Console.Debug("D_Density",self.Universe.DefaultDensity),0.1)
         setInterval(lambda :self.Console.Debug("D_Volume",self.Universe.DefaultVolume),0.1)
         self.Clock.FPS_LIMIT = 120
-        self.scene_2()
+        self.scene_3()
     def scene_1(self):
         obj = self.Universe.AddParticle(pos=self.wh.GetCenter_p(),volume=140,color=Color(0,0,255).GetTuple(),density=1e+15,name="Alpha")
         obj2 = self.Universe.AddParticle(pos=self.wh.GetCenter_p().Divide(y=10/3),vector=Vector2D(),volume=5,density=10,name="Beta")
@@ -50,6 +50,16 @@ class RPhysic:
             density=1,
             name="Beta"
             )
+    def scene_3(self):
+        self.Clock.FPS_LIMIT = 120
+        for i in range(0,3):
+            obj = self.Universe.AddParticle(
+                pos=Position2D(random.randint(0,self.wh.width),random.randint(0,self.wh.height)),
+                volume=10,
+                density=1e+13,
+                name="Beta"
+            )
+        
     def Exit(self,event=None):
         DONE_INTERVALS = True
         self.Done = True

@@ -327,9 +327,9 @@ class Console:
         for obj in self.rp.Universe.UniverseObjects:
             if(obj.InfoBox):
                 self.DrawInfoBox(obj)
-            self.ShowVector(obj.Vector,obj)
-            for obj_ in obj.Vectors:
-                self.ShowVector(obj.Vectors[obj_],obj_,obj)
+            #self.ShowVector(obj.Vector,obj)
+            #for obj_ in obj.Vectors:
+            #    self.ShowVector(obj.Vectors[obj_],obj_,obj)
         if(self.Open):
             rect(
                 self.screen,
